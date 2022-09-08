@@ -20,14 +20,18 @@ public class Passport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int serial;
+    @Column(name = "seria_p", nullable = false)
+    private int seria;
+    @Column(name = "number_p", nullable = false)
     private int number;
+    @Column(name = "created_p", nullable = false)
     private LocalDate created;
+    @Column(name = "expiration_p", nullable = false)
     private LocalDate expiration;
 
     public static Passport of(int serial, int number, LocalDate created, LocalDate expiration) {
         Passport passport = new Passport();
-        passport.serial = serial;
+        passport.seria = serial;
         passport.number = number;
         passport.created = created;
         passport.expiration = expiration;
@@ -42,12 +46,12 @@ public class Passport {
         this.id = id;
     }
 
-    public int getSerial() {
-        return serial;
+    public int getSeria() {
+        return seria;
     }
 
-    public void setSerial(int serial) {
-        this.serial = serial;
+    public void setSeria(int seria) {
+        this.seria = seria;
     }
 
     public int getNumber() {
@@ -93,7 +97,7 @@ public class Passport {
 
     @Override
     public String toString() {
-        return "Passport{id=" + id + ", serial=" + serial
+        return "Passport{id=" + id + ", seria=" + seria
                 + ", number=" + number + ", created=" + created
                 + ", expiration=" + expiration + '}';
     }

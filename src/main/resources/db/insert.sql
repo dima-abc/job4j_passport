@@ -1,0 +1,2 @@
+insert into PASSPORTS(seria_p, number_p, created_p, expiration_p) VALUES ( 3333, 05050, '2015-09-07', '2025-09-07');
+insert into PASSPORTS(seria_p, number_p, created_p, expiration_p) VALUES ( 3333, 070707, '2015-09-07', '2022-12-01');

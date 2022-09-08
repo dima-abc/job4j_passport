@@ -2,7 +2,7 @@ package ru.job4j.passport.service;
 
 import org.springframework.stereotype.Service;
 import ru.job4j.passport.domain.Passport;
-import ru.job4j.passport.repository.PassportStore;
+import ru.job4j.passport.repository.PassportRepository;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -19,11 +19,12 @@ import java.util.Optional;
  */
 @Service
 public class PassportService {
-    private final PassportStore passportStore;
-    private static final int THREE_MONTH_REPLACEABLE = 3;
+    private final PassportRepository passportRepository;
+    private static final LocalDate THREE_MONTH_REPLACEABLE = LocalDate.now().plusMonths(3);
+    private static final LocalDate UNAVALIADE = LocalDate.now();
 
-    public PassportService(PassportStore passportStore) {
-        this.passportStore = passportStore;
+    public PassportService(PassportRepository passportRepository) {
+        this.passportRepository = passportRepository;
     }
 
     /**
@@ -33,7 +34,7 @@ public class PassportService {
      * @return Passport
      */
     public Passport save(Passport passport) {
-        return this.passportStore.save(passport);
+        return this.passportRepository.save(passport);
     }
 
     /**
@@ -44,12 +45,22 @@ public class PassportService {
      * @return boolean
      */
     public boolean update(int id, Passport passport) {
-        Optional<Passport> rsl = this.passportStore.findById(id);
+        Optional<Passport> rsl = this.passportRepository.findById(id);
         rsl.ifPresent(p -> {
             passport.setId(p.getId());
-            this.passportStore.save(passport);
+            this.passportRepository.save(passport);
         });
         return rsl.isPresent();
+    }
+
+    /**
+     * Поиск passport по ID
+     *
+     * @param id ID passport
+     * @return Optional Passport
+     */
+    public Optional<Passport> findById(int id) {
+        return this.passportRepository.findById(id);
     }
 
     /**
@@ -59,8 +70,8 @@ public class PassportService {
      * @return boolean
      */
     public boolean delete(int id) {
-        Optional<Passport> rsl = this.passportStore.findById(id);
-        rsl.ifPresent(p -> this.passportStore.deleteById(p.getId()));
+        Optional<Passport> rsl = this.passportRepository.findById(id);
+        rsl.ifPresent(p -> this.passportRepository.deleteById(p.getId()));
         return rsl.isPresent();
     }
 
@@ -70,17 +81,17 @@ public class PassportService {
      * @return Iterable
      */
     public Iterable<Passport> findAll() {
-        return this.passportStore.findAll();
+        return this.passportRepository.findAll();
     }
 
     /**
      * Загрузить паспорта с заданной серией
      *
-     * @param serial int Serial passport
+     * @param seria int Serial passport
      * @return Iterable
      */
-    public Iterable<Passport> findAllSerial(int serial) {
-        return this.passportStore.findAllBySerial(serial);
+    public Iterable<Passport> findAllSeria(int seria) {
+        return this.passportRepository.findAllBySeria(seria);
     }
 
     /**
@@ -89,7 +100,7 @@ public class PassportService {
      * @return Iterable
      */
     public Iterable<Passport> findUnavaliabe() {
-        return this.passportStore.findAllByExpirationAfter(LocalDate.now());
+        return this.passportRepository.findAllByExpirationBefore(UNAVALIADE);
     }
 
     /**
@@ -98,6 +109,6 @@ public class PassportService {
      * @return Iterable
      */
     public Iterable<Passport> findReplaceableThreeMonth() {
-        return this.passportStore.findAllByExpirationAfter(LocalDate.now().minusMonths(THREE_MONTH_REPLACEABLE));
+        return this.passportRepository.findAllByExpirationBetween(UNAVALIADE, THREE_MONTH_REPLACEABLE);
     }
 }

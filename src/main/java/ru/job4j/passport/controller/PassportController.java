@@ -7,6 +7,7 @@ import ru.job4j.passport.domain.Passport;
 import ru.job4j.passport.service.PassportService;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 3. Мидл
@@ -49,13 +50,9 @@ public class PassportController {
     }
 
     @GetMapping("/find")
-    public Iterable<Passport> findAll() {
-        return passportService.findAll();
-    }
-
-    @GetMapping("/find")
-    public Iterable<Passport> findSerial(@RequestParam int serial) {
-        return passportService.findAllSerial(serial);
+    public Iterable<Passport> find(@RequestParam Optional<Integer> seria) {
+        return seria.map(passportService::findAllSeria)
+                .orElseGet(passportService::findAll);
     }
 
     @GetMapping("/unavaliabe")
