@@ -6,16 +6,23 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
 
 @SpringBootApplication
 public class PassportApplication extends SpringBootServletInitializer {
 
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return builder.sources(PassportApplication.class);
     }
+
     @Bean
     public SpringLiquibase liquibase(DataSource ds) {
         SpringLiquibase liquibase = new SpringLiquibase();
