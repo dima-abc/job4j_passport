@@ -3,11 +3,11 @@ package ru.job4j.passport.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.TestPropertySource;
 import ru.job4j.passport.domain.Passport;
 
@@ -40,6 +40,21 @@ class PassportRepositoryTest {
         Passport passportInDb = passportRepository.findById(passport.getId()).orElse(new Passport());
         assertThat(passport)
                 .isEqualTo(passportInDb);
+    }
+
+    @Test
+    void whenSaveSQLExceptionThrownSaveUnique() {
+        Passport passport = Passport.of(3333, 123123,
+                LocalDate.now().minusYears(5), LocalDate.now().plusYears(5));
+        Passport passport1 = Passport.of(3333, 123123,
+                LocalDate.now().minusYears(1), LocalDate.now().plusYears(1));
+        passportRepository.save(passport);
+        Exception exception = assertThrows(DataIntegrityViolationException.class,
+                () -> passportRepository.save(passport1));
+        String expectMessage = "DataIntegrityViolationException";
+        String actualMessage = exception.getClass().getSimpleName();
+        assertThat(actualMessage)
+                .isEqualTo(expectMessage);
     }
 
     @Test

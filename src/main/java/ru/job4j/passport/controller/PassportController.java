@@ -50,8 +50,9 @@ public class PassportController {
     }
 
     @GetMapping("/find")
-    public Iterable<Passport> find(@RequestParam Optional<Integer> seria) {
-        return seria.map(passportService::findAllSeria)
+    public Iterable<Passport> find(@RequestParam(required = false) Optional<Integer> seria) {
+        return seria
+                .map(passportService::findAllSeria)
                 .orElseGet(passportService::findAll);
     }
 

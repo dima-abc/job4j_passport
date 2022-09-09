@@ -1,5 +1,7 @@
 package ru.job4j.passport.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.job4j.passport.domain.Passport;
 import ru.job4j.passport.repository.PassportRepository;
@@ -19,6 +21,7 @@ import java.util.Optional;
  */
 @Service
 public class PassportService {
+    private static final Logger LOG = LoggerFactory.getLogger(PassportService.class.getSimpleName());
     private final PassportRepository passportRepository;
     private static final LocalDate THREE_MONTH_REPLACEABLE = LocalDate.now().plusMonths(3);
     private static final LocalDate UNAVALIADE = LocalDate.now();
@@ -34,11 +37,19 @@ public class PassportService {
      * @return Passport
      */
     public Passport save(Passport passport) {
-        return this.passportRepository.save(passport);
+        try {
+            return this.passportRepository.save(passport);
+        } catch (Exception e) {
+            LOG.error("Данные не записаны. {}", e.getMessage());
+            passport.setId(-1);
+            return passport;
+        }
+
     }
 
     /**
      * Обновить данные паспорта
+     * если запись с ID не найдена то обновления не производятся.
      *
      * @param id       ID passport
      * @param passport Passport

@@ -1,4 +1,5 @@
-
+[![Java CI with Maven](https://github.com/Dima-Stepanov/job4j_passport/actions/workflows/maven.yml/badge.svg)](https://github.com/Dima-Stepanov/job4j_passport/actions/workflows/maven.yml)
+[![codecov](https://codecov.io/gh/Dima-Stepanov/job4j_passport/branch/master/graph/badge.svg?token=KCPyPP9nDe)](https://codecov.io/gh/Dima-Stepanov/job4j_passport)
 
 
 <h1>Сервис заниматься управлением паспортами.</h1>
