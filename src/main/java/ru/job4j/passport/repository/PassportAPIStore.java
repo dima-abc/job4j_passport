@@ -5,13 +5,20 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.client.RestTemplate;
 
 
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 
 import ru.job4j.passport.domain.Passport;
+import ru.job4j.passport.dto.PassportDTO;
 
 /**
  * 3. Мидл
@@ -23,14 +30,23 @@ import ru.job4j.passport.domain.Passport;
  * @since 09.09.2022
  */
 @Repository
+@EnableScheduling
 public class PassportAPIStore {
     @Value("${url-api.passport}")
     private String url;
 
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+    private final KafkaTemplate<Integer, PassportDTO> kafkaTemplate;
+    private static final String TOPIC = "unavaliabe";
+
+
     private final RestTemplate client;
 
-    public PassportAPIStore(RestTemplate restTemplate) {
+    public PassportAPIStore(RestTemplate restTemplate,
+                            KafkaTemplate<Integer, PassportDTO> kafkaTemplate) {
         this.client = restTemplate;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     public Passport save(Passport passport) {
@@ -88,5 +104,32 @@ public class PassportAPIStore {
                 }
         ).getBody();
         return body == null ? Collections.emptyList() : body;
+    }
+
+    /**
+     * Метод для уведомления просроченных паспортов.
+     */
+    @Scheduled(fixedRate = 5000)
+    public void sendUnavaliabe() {
+        Iterable<Passport> result = findUnavaliabe();
+        for (Passport passport : result) {
+            PassportDTO msg = getPassportDTO(passport);
+            ListenableFuture<SendResult<Integer, PassportDTO>> future = kafkaTemplate
+                    .send(TOPIC, passport.getId(), msg);
+            future.addCallback(System.out::println, System.err::println);
+            kafkaTemplate.flush();
+        }
+    }
+
+    /**
+     * Преобразование DAO Passport в DTO PassportDTO
+     *
+     * @param passport Passport
+     * @return PassportDTO
+     */
+    private PassportDTO getPassportDTO(Passport passport) {
+        return PassportDTO.of(passport.getSeria(), passport.getNumber(),
+                formatter.format(passport.getCreated()),
+                formatter.format(passport.getExpiration()));
     }
 }

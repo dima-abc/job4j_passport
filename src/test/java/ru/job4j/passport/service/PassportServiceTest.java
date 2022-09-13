@@ -189,20 +189,4 @@ class PassportServiceTest {
         assertThat(result)
                 .isEmpty();
     }
-
-    @Test
-    void whenGetPassportDTOTest() {
-        Passport passport = Passport.of(3333, 123123,
-                LocalDate.now().minusYears(5), LocalDate.now().minusMonths(1));
-
-        PassportDTO result = service.getPassportDTO(passport);
-        PassportDTO expect = PassportDTO.of(passport.getSeria(), passport.getNumber(),
-                formatter.format(passport.getCreated()), formatter.format(passport.getExpiration()));
-        assertThat(result)
-                .isEqualTo(expect);
-        assertThat(result.getCreated())
-                .isEqualTo(expect.getCreated());
-        assertThat(result.getExpiration())
-                .isEqualTo(result.getExpiration());
-    }
 }

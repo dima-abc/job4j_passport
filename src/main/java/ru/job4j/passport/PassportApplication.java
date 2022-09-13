@@ -1,11 +1,13 @@
 package ru.job4j.passport;
 
 import liquibase.integration.spring.SpringLiquibase;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;

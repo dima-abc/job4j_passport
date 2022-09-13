@@ -27,7 +27,6 @@ public class PassportService {
     private final PassportRepository passportRepository;
     private static final LocalDate THREE_MONTH_REPLACEABLE = LocalDate.now().plusMonths(3);
     private static final LocalDate UNAVALIADE = LocalDate.now();
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     public PassportService(PassportRepository passportRepository) {
         this.passportRepository = passportRepository;
@@ -124,17 +123,5 @@ public class PassportService {
      */
     public Iterable<Passport> findReplaceableThreeMonth() {
         return this.passportRepository.findAllByExpirationBetween(UNAVALIADE, THREE_MONTH_REPLACEABLE);
-    }
-
-    /**
-     * Преобразование DAO Passport в DTO PassportDTO
-     *
-     * @param passport Passport
-     * @return PassportDTO
-     */
-    public PassportDTO getPassportDTO(Passport passport) {
-        return PassportDTO.of(passport.getSeria(), passport.getNumber(),
-                formatter.format(passport.getCreated()),
-                formatter.format(passport.getExpiration()));
     }
 }

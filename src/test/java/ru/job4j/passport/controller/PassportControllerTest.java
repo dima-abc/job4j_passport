@@ -10,7 +10,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.job4j.passport.PassportApplication;
+import ru.job4j.passport.config.KafkaConsumerConfig;
+import ru.job4j.passport.config.KafkaProducerConfig;
 import ru.job4j.passport.domain.Passport;
+import ru.job4j.passport.repository.PassportAPIStore;
 import ru.job4j.passport.service.PassportService;
 
 import java.time.LocalDate;

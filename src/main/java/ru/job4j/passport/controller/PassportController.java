@@ -2,12 +2,19 @@ package ru.job4j.passport.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.passport.domain.Passport;
+import ru.job4j.passport.dto.PassportDTO;
 import ru.job4j.passport.service.PassportService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 3. Мидл
@@ -21,6 +28,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api/passport")
+@EnableScheduling
 public class PassportController {
     private final PassportService passportService;
 
