@@ -24,7 +24,8 @@ import ru.job4j.passport.domain.Passport;
  */
 @Repository
 public class PassportAPIStore {
-    private String url = "/api/passport";
+    @Value("${url-api.passport}")
+    private String url;
 
     private final RestTemplate client;
 

@@ -11,9 +11,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 import ru.job4j.passport.domain.Passport;
+import ru.job4j.passport.dto.PassportDTO;
 import ru.job4j.passport.repository.PassportRepository;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -34,6 +36,7 @@ class PassportServiceTest {
     PassportRepository repository;
 
     PassportService service;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     @BeforeEach
     public void initService() {
@@ -185,5 +188,21 @@ class PassportServiceTest {
         Iterable<Passport> result = service.findReplaceableThreeMonth();
         assertThat(result)
                 .isEmpty();
+    }
+
+    @Test
+    void whenGetPassportDTOTest() {
+        Passport passport = Passport.of(3333, 123123,
+                LocalDate.now().minusYears(5), LocalDate.now().minusMonths(1));
+
+        PassportDTO result = service.getPassportDTO(passport);
+        PassportDTO expect = PassportDTO.of(passport.getSeria(), passport.getNumber(),
+                formatter.format(passport.getCreated()), formatter.format(passport.getExpiration()));
+        assertThat(result)
+                .isEqualTo(expect);
+        assertThat(result.getCreated())
+                .isEqualTo(expect.getCreated());
+        assertThat(result.getExpiration())
+                .isEqualTo(result.getExpiration());
     }
 }
