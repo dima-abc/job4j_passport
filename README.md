@@ -8,3 +8,10 @@
 <h3>Для хранения используется база данных H2. </h3>
 
 ![](img/micro.jpg) <br>
+
+
+### Контакты
+
+> email: [haoos@inbox.ru](mailto:haoos@inbox.ru) <br>
+> tl: [Dima_software](https://t.me/Dima_software) <br>
+> github.com: [Dima-Stepanov](https://github.com/Dima-Stepanov)
